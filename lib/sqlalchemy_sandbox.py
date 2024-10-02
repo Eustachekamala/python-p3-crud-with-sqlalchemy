@@ -38,8 +38,6 @@ class Student(Base):
             + f"{self.name}, " \
             + f"Grade {self.grade}"
 
-    # id = Column(Integer(), primary_key=True)
-    # name = Column(String())
 
 if __name__ == '__main__':
     engine = create_engine('sqlite:///:memory:')
@@ -68,7 +66,10 @@ if __name__ == '__main__':
         birthday=datetime(
             year=1912,
             month=6,
-            day=23
+            day=23,
+            hour=12,
+            minute=30,
+            second=53,
         ),
     )
 
@@ -77,6 +78,10 @@ if __name__ == '__main__':
     session.query(Student).update({
         Student.grade: Student.grade + 1
     })
+    
+    ## This is a bad idea, but it's a good way to show how to use the ORM
+    oldest_student = [ student for student in session.query(Student.name, Student.email, Student.birthday).order_by(desc(Student.grade)).limit(1) ]
+    print(oldest_student)
     
     query = session.query(
         Student).filter(
